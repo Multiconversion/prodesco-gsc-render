@@ -183,6 +183,26 @@ def ensure_sheet_tab(sheets, spreadsheet_id: str, sheet_name: str) -> int:
     return resp["replies"][0]["addSheet"]["properties"]["sheetId"]
 
 
+def ensure_grid_size(sheets, spreadsheet_id: str, sheet_id: int, needed_rows: int, needed_cols: int):
+    """Amplía la cuadrícula de la pestaña si hace falta (filas/columnas)."""
+    # Añadimos un margen para evitar re-redimensionar en el siguiente batch
+    target_rows = max(needed_rows + 100, 1000)
+    target_cols = max(needed_cols, 4)
+    reqs = [{
+        "updateSheetProperties": {
+            "properties": {
+                "sheetId": sheet_id,
+                "gridProperties": {
+                    "rowCount": target_rows,
+                    "columnCount": target_cols
+                }
+            },
+            "fields": "gridProperties.rowCount,gridProperties.columnCount"
+        }
+    }]
+    sheets.spreadsheets().batchUpdate(spreadsheetId=spreadsheet_id, body={"requests": reqs}).execute()
+
+
 def clear_sheet(sheets, spreadsheet_id: str, sheet_name: str):
     """Limpia el rango A:Z de la pestaña (ignora si está vacía)."""
     sheets.spreadsheets().values().clear(
@@ -260,8 +280,9 @@ def main():
     # Transformar
     values = to_values(rows)
 
-    # Preparar hoja
-    ensure_sheet_tab(sheets, spreadsheet_id, sheet_name)
+    # Preparar hoja (crear y asegurar tamaño)
+    sheet_id = ensure_sheet_tab(sheets, spreadsheet_id, sheet_name)
+    ensure_grid_size(sheets, spreadsheet_id, sheet_id, len(values), len(values[0]))
     clear_sheet(sheets, spreadsheet_id, sheet_name)
 
     # Escribir

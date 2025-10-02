@@ -14,6 +14,4 @@ services:
       value: SC_16m
     - key: GSC_SEARCH_TYPE
       value: web
-    # ⚠️ No pongas GOOGLE_CREDENTIALS_JSON en el repo. Añádelo en el dashboard de Render:
-    # - key: GOOGLE_CREDENTIALS_JSON
-    #   fromSecret: gsc-service-account-json
+    # Añade GOOGLE_CREDENTIALS_JSON o GOOGLE_CREDENTIALS_BASE64 desde el panel de Render
