@@ -1,17 +1,49 @@
 services:
 - type: cron
-  name: gsc-to-sheets-prodesco
+  name: woocommerce-redirect-matcher-gsc-v2
   env: python
-  schedule: "0 6 * * *"   # todos los días a las 06:00 UTC
+  schedule: "0 5 * * *"
   buildCommand: "pip install -r requirements.txt"
-  startCommand: "python main.py"
+  startCommand: "python match_woocommerce_redirects_gsc.py"
   envVars:
     - key: GSC_SITE_URL
       value: sc-domain:prodesco.es
-    - key: GS_SPREADSHEET_ID
-      value: 1YIX6aITtyZISK99g_QXot3oBGShJWHanxFwZDRvO3F4
-    - key: GS_SHEET_NAME
-      value: SC_16m
+    - key: SOURCE_SPREADSHEET_ID
+      value: 1cG_3QMYu1iM4TPwu6FILVFFoZy3v4kw6Iy-SwyQBtzQ
+    - key: OUTPUT_TAB_MATCHES
+      value: Matches
+    - key: OUTPUT_TAB_UNMATCHED
+      value: Unmatched
+    - key: OUTPUT_TAB_HTACCESS
+      value: Redirects_301
+    - key: DATA_STATE
+      value: final
     - key: GSC_SEARCH_TYPE
       value: web
-    # Añade GOOGLE_CREDENTIALS_JSON o GOOGLE_CREDENTIALS_BASE64 desde el panel de Render
+    - key: DATE_RANGE_MONTHS
+      value: "16"
+    - key: END_DATE_OFFSET_DAYS
+      value: "2"
+    - key: MAX_QUERIES_PER_URL
+      value: "200"
+    - key: URL_WEIGHT
+      value: "0.35"
+    - key: QUERY_WEIGHT
+      value: "0.65"
+    - key: MIN_SCORE
+      value: "65"
+    - key: MIN_MARGIN
+      value: "5"
+    - key: LANG_HINTS
+      value: es,en
+    - key: USE_NGRAMS
+      value: "2"
+    - key: MAX_CANDIDATES
+      value: "400"
+    - key: WRITE_DEBUG_SHEET
+      value: "1"
+    # Añade en Render:
+    # - key: GOOGLE_CREDENTIALS_JSON  (Service Account JSON)
+    # - key: WOO_BASE_URL            (https://prodesco.es)
+    # - key: WOO_CONSUMER_KEY
+    # - key: WOO_CONSUMER_SECRET
