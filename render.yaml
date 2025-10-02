@@ -1,0 +1,19 @@
+services:
+- type: cron
+  name: gsc-to-sheets-prodesco
+  env: python
+  schedule: "0 6 * * *"   # todos los días a las 06:00 UTC
+  buildCommand: "pip install -r requirements.txt"
+  startCommand: "python main.py"
+  envVars:
+    - key: GSC_SITE_URL
+      value: sc-domain:prodesco.es
+    - key: GS_SPREADSHEET_ID
+      value: 1YIX6aITtyZISK99g_QXot3oBGShJWHanxFwZDRvO3F4
+    - key: GS_SHEET_NAME
+      value: SC_16m
+    - key: GSC_SEARCH_TYPE
+      value: web
+    # ⚠️ No pongas GOOGLE_CREDENTIALS_JSON en el repo. Añádelo en el dashboard de Render:
+    # - key: GOOGLE_CREDENTIALS_JSON
+    #   fromSecret: gsc-service-account-json
